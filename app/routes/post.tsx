@@ -83,16 +83,5 @@ export default function PostPage() {
     )
   }
 
-  return (
-    <div>
-      <div className="mb-6">
-        <Button variant="ghost" onClick={() => navigate('/')} className="mb-4">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Voltar para início
-        </Button>
-      </div>
-
-      <PostDetail post={post} />
-    </div>
-  )
+  return <PostDetail post={post} />
 }
