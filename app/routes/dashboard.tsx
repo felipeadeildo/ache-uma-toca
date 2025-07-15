@@ -151,13 +151,13 @@ export default function Dashboard() {
       <div className="flex gap-4">
         <Button asChild className="bg-orange-600 hover:bg-orange-700">
           <Link to="/dashboard/create-post">
-            <Plus className="w-4 h-4 mr-2" />
-            Criar Novo Post
+            <Plus className="w-4 h-4" />
+            Criar Novo Anúncio
           </Link>
         </Button>
         <Button variant="outline" asChild>
           <Link to="/">
-            <Eye className="w-4 h-4 mr-2" />
+            <Eye className="w-4 h-4" />
             Ver Todos os Anúncios
           </Link>
         </Button>
@@ -183,9 +183,9 @@ export default function Dashboard() {
               Comece criando seu primeiro anúncio para encontrar colegas de
               quarto.
             </p>
-            <Button asChild className="bg-orange-600 hover:bg-orange-700">
+            <Button className="bg-orange-600 hover:bg-orange-700" asChild>
               <Link to="/dashboard/create-post">
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-4 h-4" />
                 Criar Primeiro Post
               </Link>
             </Button>
