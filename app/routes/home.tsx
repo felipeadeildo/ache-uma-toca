@@ -1,5 +1,6 @@
 import { Home as HomeIcon, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { EmptyState } from '~/components/empty-state'
 import { PostCard } from '~/components/post-card'
 import { PostFilter } from '~/components/post-filter'
@@ -24,6 +25,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState<PostFilters>({})
   const [showFilters, setShowFilters] = useState(false)
+  const navigate = useNavigate()
 
   useEffect(() => {
     fetchPosts()
@@ -91,11 +93,9 @@ export default function Home() {
 
   const handleCreatePost = () => {
     if (!user) {
-      // Redirect to login
-      window.location.href = '/login'
+      navigate('/login')
     } else {
-      // TODO: Redirect to create post page
-      console.log('Create post')
+      navigate('/dashboard/create-post')
     }
   }
 
