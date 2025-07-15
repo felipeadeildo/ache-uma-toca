@@ -1,5 +1,7 @@
-import { Clock, DollarSign, MapPin, User, Verified } from 'lucide-react'
+import { Clock, Edit3, MapPin, User, Verified } from 'lucide-react'
+import { useNavigate } from 'react-router'
 import { Badge } from '~/components/ui/badge'
+import { Button } from '~/components/ui/button'
 import { formatPrice, formatRelativeTime } from '~/lib'
 import {
   type PostWithAuthorAndImages,
@@ -9,26 +11,44 @@ import {
 
 interface PostHeaderProps {
   post: PostWithAuthorAndImages
+  currentUserId?: string
 }
 
-export function PostHeader({ post }: PostHeaderProps) {
+export function PostHeader({ post, currentUserId }: PostHeaderProps) {
+  const navigate = useNavigate()
+  const isOwner = currentUserId === post.user_id
+
   return (
     <div className="space-y-4">
-      {/* Badges */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <Badge
-          className={`${POST_TYPE_COLORS[post.post_type]} text-sm px-4 py-1`}
-        >
-          {POST_TYPE_LABELS[post.post_type]}
-        </Badge>
-        {post.expires_at && new Date(post.expires_at) > new Date() && (
+      {/* Badges and Edit Button */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <Badge
-            variant="outline"
-            className="text-green-600 border-green-500 bg-green-50"
+            className={`${POST_TYPE_COLORS[post.post_type]} text-sm px-4 py-1`}
           >
-            <Verified className="w-3 h-3 mr-1" />
-            Ativo
+            {POST_TYPE_LABELS[post.post_type]}
           </Badge>
+          {post.expires_at && new Date(post.expires_at) > new Date() && (
+            <Badge
+              variant="outline"
+              className="text-green-600 border-green-500 bg-green-50"
+            >
+              <Verified className="w-3 h-3 mr-1" />
+              Ativo
+            </Badge>
+          )}
+        </div>
+
+        {/* Edit Button for Owner */}
+        {isOwner && (
+          <Button
+            onClick={() => navigate(`/dashboard/posts/${post.id}/edit`)}
+            variant="outline"
+            className="border-orange-200 text-orange-600 hover:bg-orange-50"
+          >
+            <Edit3 className="w-4 h-4 mr-2" />
+            Editar
+          </Button>
         )}
       </div>
 
@@ -37,11 +57,9 @@ export function PostHeader({ post }: PostHeaderProps) {
         {post.title}
       </h1>
 
-      {/* Price */}
-      <div className="flex items-center gap-2 text-orange-600">
-        <DollarSign className="w-6 h-6" />
-        <span className="text-3xl font-bold">{formatPrice(post.price)}</span>
-      </div>
+      <span className="text-3xl font-bold text-orange-600">
+        {formatPrice(post.price)}
+      </span>
 
       {/* Meta Info */}
       <div className="flex flex-col sm:flex-row sm:items-center gap-4 text-gray-600">
