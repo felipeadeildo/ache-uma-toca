@@ -20,11 +20,11 @@ import {
   type Step,
 } from '~/components/create-post/step-indicator'
 import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
+import { Card, CardContent, CardTitle } from '~/components/ui/card'
 import { useAuth } from '~/contexts/auth-context'
+import { useImages } from '~/contexts/images-context'
 import { useCreatePostForm } from '~/hooks/use-create-post-form'
-import { useImageUpload } from '~/hooks/use-image-upload'
-import { supabase } from '~/lib/supabase'
+import { useCreatePost } from '~/hooks/use-posts'
 import type { PostInsert } from '~/types/post'
 import type { Route } from './+types/create-post'
 
@@ -72,9 +72,9 @@ export default function CreatePost() {
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
 
-  const { formData, errors, updateField, validateStep, resetForm } =
-    useCreatePostForm()
-  const { uploading, uploadImages } = useImageUpload()
+  const { formData, errors, updateField, validateStep } = useCreatePostForm()
+  const { uploading, uploadImages } = useImages()
+  const { createPost } = useCreatePost()
 
   const nextStep = () => {
     if (validateStep(currentStep)) {
@@ -107,26 +107,20 @@ export default function CreatePost() {
         extra_info: formData.extra_info || null,
       }
 
-      const { data: post, error: postError } = await supabase
-        .from('posts')
-        .insert(postData)
-        .select()
-        .single()
+      const { success, post, error: createError } = await createPost(postData)
 
-      if (postError) {
-        console.error('Error creating post:', postError)
-        alert('Erro ao criar post. Tente novamente.')
+      if (!success) {
+        alert(createError || 'Erro ao criar post. Tente novamente.')
         return
       }
 
       // Upload images if any
       if (formData.images.length > 0) {
-        const { success } = await uploadImages(formData.images, post.id)
-        if (!success) {
-          // If image upload fails, we could either:
-          // 1. Delete the post and show error
-          // 2. Keep the post but show warning about images
-          // Let's keep the post and show a warning
+        const { success: uploadSuccess } = await uploadImages(
+          formData.images,
+          post.id
+        )
+        if (!uploadSuccess) {
           alert(
             'Post criado com sucesso, mas algumas imagens não puderam ser carregadas.'
           )

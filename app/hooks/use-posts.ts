@@ -37,3 +37,24 @@ export function useUserPosts() {
     stats,
   }
 }
+
+export function useCreatePost() {
+  const { createPost } = usePosts()
+  
+  return {
+    createPost,
+  }
+}
+
+export function useEditPost() {
+  const { editPost, editLoading, editError, fetchEditPost, updatePost, clearEditPost } = usePosts()
+  
+  return {
+    post: editPost,
+    loading: editLoading,
+    error: editError,
+    fetchPost: fetchEditPost,
+    updatePost,
+    clearPost: clearEditPost,
+  }
+}

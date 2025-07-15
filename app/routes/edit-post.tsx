@@ -12,12 +12,11 @@ import {
   SelectValue,
 } from '~/components/ui/select'
 import { useAuth } from '~/contexts/auth-context'
-import { supabase } from '~/lib/supabase'
+import { useEditPost, useUserPosts } from '~/hooks/use-posts'
 import {
   GENDER_PREFERENCE_LABELS,
   POST_TYPE_LABELS,
   type GenderPreference,
-  type Post,
   type PostType,
   type PostUpdate,
 } from '~/types/post'
@@ -51,59 +50,38 @@ export default function EditPost() {
   const { user } = useAuth()
   const navigate = useNavigate()
   const { id } = useParams()
-  const [post, setPost] = useState<Post | null>(null)
   const [formData, setFormData] = useState<FormData | null>(null)
-  const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [errors, setErrors] = useState<Partial<FormData>>({})
 
+  const { post, loading, error, fetchPost, updatePost, clearPost } =
+    useEditPost()
+  const { deletePost } = useUserPosts()
+
   useEffect(() => {
-    if (id) {
-      fetchPost()
+    if (id && user?.id) {
+      fetchPost(id, user.id)
     }
-  }, [id])
+    return () => clearPost()
+  }, [id, user?.id, fetchPost, clearPost])
 
-  const fetchPost = async () => {
-    if (!id || !user?.id) {
-      navigate('/dashboard')
-      return
+  useEffect(() => {
+    if (post) {
+      setFormData({
+        post_type: post.post_type,
+        title: post.title,
+        description: post.description,
+        location: post.location,
+        price: post.price?.toString() || '',
+        available_date: post.available_date || '',
+        contact_whatsapp: post.contact_whatsapp || '',
+        contact_email: post.contact_email || '',
+        contact_telegram: post.contact_telegram || '',
+        gender_preference: post.gender_preference || '',
+        extra_info: post.extra_info || '',
+      })
     }
-
-    try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('posts')
-        .select('*')
-        .eq('id', id)
-        .eq('user_id', user.id) // Ensure user can only edit their own posts
-        .single()
-
-      if (error) {
-        console.error('Error fetching post:', error)
-        navigate('/dashboard')
-      } else {
-        setPost(data)
-        setFormData({
-          post_type: data.post_type,
-          title: data.title,
-          description: data.description,
-          location: data.location,
-          price: data.price?.toString() || '',
-          available_date: data.available_date || '',
-          contact_whatsapp: data.contact_whatsapp || '',
-          contact_email: data.contact_email || '',
-          contact_telegram: data.contact_telegram || '',
-          gender_preference: data.gender_preference || '',
-          extra_info: data.extra_info || '',
-        })
-      }
-    } catch (error) {
-      console.error('Error fetching post:', error)
-      navigate('/dashboard')
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [post])
 
   const updateFormData = (field: keyof FormData, value: string) => {
     if (!formData) return
@@ -161,13 +139,9 @@ export default function EditPost() {
         updated_at: new Date().toISOString(),
       }
 
-      const { error } = await supabase
-        .from('posts')
-        .update(updateData)
-        .eq('id', post.id)
+      const success = await updatePost(post.id, updateData)
 
-      if (error) {
-        console.error('Error updating post:', error)
+      if (!success) {
         alert('Erro ao atualizar post. Tente novamente.')
       } else {
         navigate('/dashboard')
@@ -191,10 +165,9 @@ export default function EditPost() {
     }
 
     try {
-      const { error } = await supabase.from('posts').delete().eq('id', post.id)
+      const success = await deletePost(post.id)
 
-      if (error) {
-        console.error('Error deleting post:', error)
+      if (!success) {
         alert('Erro ao excluir post. Tente novamente.')
       } else {
         navigate('/dashboard')
@@ -215,17 +188,21 @@ export default function EditPost() {
     )
   }
 
-  if (!formData || !post) {
+  if (error || (!formData && !loading)) {
     return (
       <div className="max-w-2xl mx-auto space-y-8">
         <div className="text-center py-12">
-          <p className="text-gray-500">Post não encontrado.</p>
+          <p className="text-gray-500">{error || 'Post não encontrado.'}</p>
           <Button asChild className="mt-4">
             <Link to="/dashboard">Voltar ao Dashboard</Link>
           </Button>
         </div>
       </div>
     )
+  }
+
+  if (!formData || !post) {
+    return null
   }
 
   return (

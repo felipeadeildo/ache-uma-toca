@@ -1,6 +1,6 @@
-import { createContext, useContext, useCallback, useState, ReactNode } from 'react'
+import { createContext, useCallback, useContext, useState, type ReactNode } from 'react'
 import { supabase } from '~/lib/supabase'
-import { type PostFilters, type PostWithAuthorAndImages, type PostWithAuthor } from '~/types/post'
+import { type Post, type PostFilters, type PostInsert, type PostUpdate, type PostWithAuthor, type PostWithAuthorAndImages } from '~/types/post'
 
 interface PostsContextType {
   // Home page posts
@@ -24,6 +24,17 @@ interface PostsContextType {
   userPostsError: string | null
   fetchUserPosts: (userId: string) => Promise<void>
   deletePost: (postId: string) => Promise<boolean>
+  
+  // Create post
+  createPost: (postData: PostInsert) => Promise<{ success: boolean; post?: any; error?: string }>
+  
+  // Edit post
+  editPost: Post | null
+  editLoading: boolean
+  editError: string | null
+  fetchEditPost: (id: string, userId: string) => Promise<void>
+  updatePost: (id: string, updateData: PostUpdate) => Promise<boolean>
+  clearEditPost: () => void
   
   // Stats
   stats: {
@@ -51,6 +62,12 @@ export function PostsProvider({ children }: { children: ReactNode }) {
   const [userPosts, setUserPosts] = useState<PostWithAuthor[]>([])
   const [userPostsLoading, setUserPostsLoading] = useState(false)
   const [userPostsError, setUserPostsError] = useState<string | null>(null)
+  
+  // Edit post state
+  const [editPost, setEditPost] = useState<Post | null>(null)
+  const [editLoading, setEditLoading] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+  
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -245,6 +262,80 @@ export function PostsProvider({ children }: { children: ReactNode }) {
     }
   }, [])
 
+  const createPost = useCallback(async (postData: PostInsert): Promise<{ success: boolean; post?: any; error?: string }> => {
+    try {
+      const { data: post, error: postError } = await supabase
+        .from('posts')
+        .insert(postData)
+        .select()
+        .single()
+
+      if (postError) {
+        console.error('Error creating post:', postError)
+        return { success: false, error: 'Erro ao criar post. Tente novamente.' }
+      }
+
+      return { success: true, post }
+    } catch (error) {
+      console.error('Error creating post:', error)
+      return { success: false, error: 'Erro inesperado ao criar post.' }
+    }
+  }, [])
+
+  const fetchEditPost = useCallback(async (id: string, userId: string) => {
+    try {
+      setEditLoading(true)
+      setEditError(null)
+
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', userId) // Ensure user can only edit their own posts
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          setEditError('Post não encontrado')
+        } else {
+          setEditError('Erro ao carregar post para edição')
+        }
+        console.error('Error fetching post for edit:', error)
+      } else {
+        setEditPost(data as Post)
+      }
+    } catch (err) {
+      setEditError('Erro inesperado ao carregar post')
+      console.error('Error fetching post for edit:', err)
+    } finally {
+      setEditLoading(false)
+    }
+  }, [])
+
+  const updatePost = useCallback(async (id: string, updateData: PostUpdate): Promise<boolean> => {
+    try {
+      const { error } = await supabase
+        .from('posts')
+        .update(updateData)
+        .eq('id', id)
+
+      if (error) {
+        console.error('Error updating post:', error)
+        return false
+      }
+
+      return true
+    } catch (err) {
+      console.error('Error updating post:', err)
+      return false
+    }
+  }, [])
+
+  const clearEditPost = useCallback(() => {
+    setEditPost(null)
+    setEditError(null)
+  }, [])
+
   const value: PostsContextType = {
     // Home posts
     posts,
@@ -267,6 +358,17 @@ export function PostsProvider({ children }: { children: ReactNode }) {
     userPostsError,
     fetchUserPosts,
     deletePost,
+    
+    // Create post
+    createPost,
+    
+    // Edit post
+    editPost,
+    editLoading,
+    editError,
+    fetchEditPost,
+    updatePost,
+    clearEditPost,
     
     // Stats
     stats,
