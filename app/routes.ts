@@ -12,6 +12,8 @@ export default [
 
     layout('layouts/protected.tsx', [
       route('dashboard', 'routes/dashboard.tsx'),
+      route('dashboard/create-post', 'routes/create-post.tsx'),
+      route('dashboard/posts/:id/edit', 'routes/edit-post.tsx'),
     ]),
   ]),
 
