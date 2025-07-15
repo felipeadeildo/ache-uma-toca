@@ -101,8 +101,7 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      {/* Posts Section */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-semibold text-gray-900">
             Anúncios recentes
@@ -116,7 +115,6 @@ export default function Home() {
           </Button>
         </div>
 
-        {/* Filters */}
         <PostFilter
           filters={filters}
           onFiltersChange={setFilters}
@@ -125,7 +123,6 @@ export default function Home() {
           onToggleFilters={() => setShowFilters(!showFilters)}
         />
 
-        {/* Posts List */}
         {loading ? (
           <div className="flex justify-center items-center py-16">
             <div className="text-center">
@@ -145,7 +142,7 @@ export default function Home() {
           />
         ) : (
           <ScrollArea className="h-[800px]">
-            <div className="grid gap-4 pb-4">
+            <div className="space-y-0">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}

@@ -1,6 +1,5 @@
 import { Home, Plus, Search } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { Card, CardContent } from '~/components/ui/card'
 
 interface EmptyStateProps {
   title: string
@@ -27,20 +26,18 @@ export function EmptyState({
   const Icon = iconMap[icon]
 
   return (
-    <Card className="border-dashed">
-      <CardContent className="flex flex-col items-center justify-center py-16 text-center">
-        <Icon className="w-16 h-16 text-gray-400 mb-6" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-        <p className="text-gray-500 mb-6 max-w-md">{description}</p>
-        {action && (
-          <Button
-            onClick={action.onClick}
-            className="bg-orange-600 hover:bg-orange-700"
-          >
-            {action.label}
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+    <div className="flex flex-col items-center justify-center py-16 text-center">
+      <Icon className="w-16 h-16 text-gray-400 mb-6" />
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+      <p className="text-gray-500 mb-6 max-w-md">{description}</p>
+      {action && (
+        <Button
+          onClick={action.onClick}
+          className="bg-orange-600 hover:bg-orange-700"
+        >
+          {action.label}
+        </Button>
+      )}
+    </div>
   )
 }

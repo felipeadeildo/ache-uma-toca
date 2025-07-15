@@ -1,6 +1,5 @@
 import { Filter, Search, X } from 'lucide-react'
 import { Button } from '~/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '~/components/ui/card'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
 import {
@@ -97,113 +96,119 @@ export function PostFilter({
 
       {/* Advanced Filters */}
       {showFilters && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Filtros avançados</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Post Type Filter */}
-              <div className="space-y-2">
-                <Label htmlFor="post-type">Tipo de anúncio</Label>
-                <Select
-                  value={filters.postType || 'all'}
-                  onValueChange={(value) =>
-                    handleFilterChange(
-                      'postType',
-                      value === 'all' ? undefined : value
-                    )
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Todos os tipos" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todos os tipos</SelectItem>
-                    {Object.entries(POST_TYPE_LABELS).map(([key, label]) => (
+        <div className="border-t border-gray-200 pt-2 mt-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Post Type Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="post-type" className="text-xs text-gray-600">
+                Tipo de anúncio
+              </Label>
+              <Select
+                value={filters.postType || 'all'}
+                onValueChange={(value) =>
+                  handleFilterChange(
+                    'postType',
+                    value === 'all' ? undefined : value
+                  )
+                }
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Todos os tipos" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos os tipos</SelectItem>
+                  {Object.entries(POST_TYPE_LABELS).map(([key, label]) => (
+                    <SelectItem key={key} value={key}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Location Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="location" className="text-xs text-gray-600">
+                Localização
+              </Label>
+              <Input
+                id="location"
+                placeholder="Ex: Pinheiros, Vila Olímpia..."
+                value={filters.location || ''}
+                onChange={(e) => handleFilterChange('location', e.target.value)}
+                className="h-9"
+              />
+            </div>
+
+            {/* Gender Preference Filter */}
+            <div className="space-y-2">
+              <Label htmlFor="gender" className="text-xs text-gray-600">
+                Preferência de gênero
+              </Label>
+              <Select
+                value={filters.genderPreference || 'qualquer'}
+                onValueChange={(value) =>
+                  handleFilterChange(
+                    'genderPreference',
+                    value === 'qualquer' ? undefined : value
+                  )
+                }
+              >
+                <SelectTrigger className="h-9">
+                  <SelectValue placeholder="Qualquer" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(GENDER_PREFERENCE_LABELS).map(
+                    ([key, label]) => (
                       <SelectItem key={key} value={key}>
                         {label}
                       </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Location Filter */}
-              <div className="space-y-2">
-                <Label htmlFor="location">Localização</Label>
-                <Input
-                  id="location"
-                  placeholder="Ex: Pinheiros, Vila Olímpia..."
-                  value={filters.location || ''}
-                  onChange={(e) =>
-                    handleFilterChange('location', e.target.value)
-                  }
-                />
-              </div>
-
-              {/* Gender Preference Filter */}
-              <div className="space-y-2">
-                <Label htmlFor="gender">Preferência de gênero</Label>
-                <Select
-                  value={filters.genderPreference || 'qualquer'}
-                  onValueChange={(value) =>
-                    handleFilterChange(
-                      'genderPreference',
-                      value === 'qualquer' ? undefined : value
                     )
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Qualquer" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {Object.entries(GENDER_PREFERENCE_LABELS).map(
-                      ([key, label]) => (
-                        <SelectItem key={key} value={key}>
-                          {label}
-                        </SelectItem>
-                      )
-                    )}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Price Range */}
-              <div className="space-y-2">
-                <Label htmlFor="price-min">Preço mínimo</Label>
-                <Input
-                  id="price-min"
-                  type="number"
-                  placeholder="R$ 0"
-                  value={filters.priceMin || ''}
-                  onChange={(e) =>
-                    handleFilterChange(
-                      'priceMin',
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="price-max">Preço máximo</Label>
-                <Input
-                  id="price-max"
-                  type="number"
-                  placeholder="R$ 10.000"
-                  value={filters.priceMax || ''}
-                  onChange={(e) =>
-                    handleFilterChange(
-                      'priceMax',
-                      e.target.value ? Number(e.target.value) : undefined
-                    )
-                  }
-                />
-              </div>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
-          </CardContent>
-        </Card>
+
+            {/* Price Range */}
+            <div className="space-y-2">
+              <Label htmlFor="price-min" className="text-xs text-gray-600">
+                Preço mínimo
+              </Label>
+              <Input
+                id="price-min"
+                type="number"
+                placeholder="R$ 0"
+                value={filters.priceMin || ''}
+                onChange={(e) =>
+                  handleFilterChange(
+                    'priceMin',
+                    e.target.value ? Number(e.target.value) : undefined
+                  )
+                }
+                className="h-9"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="price-max" className="text-xs text-gray-600">
+                Preço máximo
+              </Label>
+              <Input
+                id="price-max"
+                type="number"
+                placeholder="R$ 10.000"
+                value={filters.priceMax || ''}
+                onChange={(e) =>
+                  handleFilterChange(
+                    'priceMax',
+                    e.target.value ? Number(e.target.value) : undefined
+                  )
+                }
+                className="h-9"
+              />
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )
