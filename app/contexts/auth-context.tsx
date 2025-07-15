@@ -119,6 +119,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email,
         options: {
           shouldCreateUser: true,
+          emailRedirectTo: `${window.location.origin}/dashboard`,
           data: {
             name: userData.name,
             course: userData.course,
@@ -140,6 +141,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       email,
       options: {
         shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/dashboard`,
       },
     })
 
