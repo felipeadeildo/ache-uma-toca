@@ -24,27 +24,27 @@ export function LocationPriceStep({
   errors,
 }: LocationPriceStepProps) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-5">
       <div className="space-y-2">
-        <Label htmlFor="location">Localização *</Label>
+        <Label htmlFor="location" className="text-sm font-medium">Localização *</Label>
         <Input
           id="location"
           placeholder="Ex: Vila Olímpia, São Paulo - SP"
           value={location}
           onChange={(e) => onLocationChange(e.target.value)}
-          className={errors.location ? 'border-red-500' : ''}
+          className={`text-sm ${errors.location ? 'border-red-500' : ''}`}
         />
         {errors.location && (
-          <p className="text-sm text-red-600">{errors.location}</p>
+          <p className="text-xs text-red-600">{errors.location}</p>
         )}
         <p className="text-xs text-gray-500">
-          Informe o bairro e cidade. Seja específico para ajudar na busca
+          Informe bairro e cidade
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
-          <Label htmlFor="price">Valor Mensal (R$)</Label>
+          <Label htmlFor="price" className="text-sm font-medium">Valor Mensal (R$)</Label>
           <div className="relative">
             <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">
               R$
@@ -55,38 +55,38 @@ export function LocationPriceStep({
               placeholder="1500"
               value={price}
               onChange={(e) => onPriceChange(e.target.value)}
-              className="pl-10"
+              className="pl-10 text-sm"
             />
           </div>
           <p className="text-xs text-gray-500">
-            Deixe em branco se preferir negociar diretamente
+            Opcional
           </p>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="available_date">Data de Disponibilidade</Label>
+          <Label htmlFor="available_date" className="text-sm font-medium">Data Disponível</Label>
           <Input
             id="available_date"
             type="date"
             value={availableDate}
             onChange={(e) => onAvailableDateChange(e.target.value)}
+            className="text-sm"
           />
           <p className="text-xs text-gray-500">
-            Quando o espaço estará disponível
+            Quando estará livre
           </p>
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start space-x-3">
-          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div className="flex items-start space-x-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
           <div>
-            <h4 className="text-sm font-medium text-blue-900 mb-1">
-              Dica para atrair mais interessados
+            <h4 className="text-xs font-medium text-blue-900 mb-1">
+              💡 Dica
             </h4>
             <p className="text-xs text-blue-700">
-              Seja transparente sobre custos adicionais como condomínio, IPTU, 
-              internet, limpeza, etc. Isso evita surpresas e gera mais confiança.
+              Seja transparente sobre custos extras (condomínio, internet, etc.)
             </p>
           </div>
         </div>

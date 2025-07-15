@@ -42,31 +42,26 @@ const steps: Step[] = [
   {
     id: 1,
     title: 'Informações',
-    description: 'Título e descrição do anúncio',
     icon: User,
   },
   {
     id: 2,
     title: 'Localização',
-    description: 'Local e preço',
     icon: MapPin,
   },
   {
     id: 3,
     title: 'Fotos',
-    description: 'Imagens do espaço',
     icon: Image,
   },
   {
     id: 4,
     title: 'Contato',
-    description: 'Formas de contato',
     icon: MessageCircle,
   },
   {
     id: 5,
     title: 'Revisão',
-    description: 'Conferir e publicar',
     icon: Check,
   },
 ]
@@ -235,35 +230,33 @@ export default function CreatePost() {
   const isProcessing = loading || uploading
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <h1 className="text-2xl text-center font-bold text-gray-900 mb-2">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 lg:px-6">
+      <h1 className="text-lg sm:text-xl text-center font-bold text-gray-900 mb-3 sm:mb-4">
         Criar Novo Anúncio
       </h1>
 
       <StepIndicator steps={steps} currentStep={currentStep} />
 
-      <Card className="mb-4">
-        <CardHeader className="border-b">
-          <CardTitle className="text-xl">
-            {steps[currentStep - 1]?.title}
-          </CardTitle>
-          <p className="text-gray-600">{steps[currentStep - 1]?.description}</p>
-        </CardHeader>
-        <CardContent>{renderStepContent()}</CardContent>
+      <Card className="mb-4 py-3">
+        <CardTitle className="text-base text-center sm:text-lg">
+          {steps[currentStep - 1]?.title}
+        </CardTitle>
+        <CardContent className="pb-2">{renderStepContent()}</CardContent>
       </Card>
 
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
         <Button
           variant="outline"
           onClick={prevStep}
           disabled={currentStep === 1 || isProcessing}
           size="lg"
+          className="w-full sm:w-auto order-2 sm:order-1"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           Anterior
         </Button>
 
-        <div className="text-sm text-gray-500">
+        <div className="text-xs sm:text-sm text-gray-500 order-1 sm:order-2">
           Passo {currentStep} de {steps.length}
         </div>
 
@@ -272,7 +265,7 @@ export default function CreatePost() {
             onClick={nextStep}
             disabled={isProcessing}
             size="lg"
-            className="bg-orange-600 hover:bg-orange-700"
+            className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto order-3"
           >
             Próximo
             <ArrowRight className="w-4 h-4" />
@@ -282,7 +275,7 @@ export default function CreatePost() {
             onClick={handleSubmit}
             disabled={isProcessing}
             size="lg"
-            className="bg-green-600 hover:bg-green-700"
+            className="bg-green-600 hover:bg-green-700 w-full sm:w-auto order-3"
           >
             {isProcessing ? (
               <>

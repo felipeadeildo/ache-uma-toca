@@ -1,14 +1,13 @@
 import { Clock, Edit, Eye, Plus, Trash2, TrendingUp } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { useAuth } from '~/contexts/auth-context'
 import { formatRelativeTime } from '~/lib'
-import { supabase } from '~/lib/supabase'
+import { useUserPosts } from '~/hooks/use-posts'
 import {
   POST_TYPE_COLORS,
   POST_TYPE_LABELS,
-  type PostWithAuthor,
 } from '~/types/post'
 import type { Route } from './+types/dashboard'
 
@@ -24,122 +23,67 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Dashboard() {
   const { profile, user } = useAuth()
-  const [posts, setPosts] = useState<PostWithAuthor[]>([])
-  const [loading, setLoading] = useState(true)
-  const [stats, setStats] = useState({
-    total: 0,
-    active: 0,
-    expired: 0,
-  })
+  const { posts, loading, error, fetchUserPosts, deletePost, stats } = useUserPosts()
 
   useEffect(() => {
-    if (user) {
-      fetchUserPosts()
+    if (user?.id) {
+      fetchUserPosts(user.id)
     }
-  }, [user])
-
-  const fetchUserPosts = async () => {
-    if (!user?.id) return
-
-    try {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('posts')
-        .select(
-          `
-          *,
-          profiles!posts_user_id_fkey (
-            name,
-            email,
-            avatar_url
-          )
-        `
-        )
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-
-      if (error) {
-        console.error('Error fetching user posts:', error)
-      } else {
-        const postsData = data as PostWithAuthor[]
-        setPosts(postsData)
-
-        const now = new Date()
-        const activeCount = postsData.filter(
-          (post) => post.expires_at && new Date(post.expires_at) > now
-        ).length
-
-        setStats({
-          total: postsData.length,
-          active: activeCount,
-          expired: postsData.length - activeCount,
-        })
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [user?.id, fetchUserPosts])
 
   const handleDeletePost = async (postId: string) => {
     if (confirm('Tem certeza que deseja excluir este post?')) {
-      try {
-        const { error } = await supabase.from('posts').delete().eq('id', postId)
-
-        if (!error) {
-          fetchUserPosts()
-        }
-      } catch (error) {
-        console.error('Error deleting post:', error)
+      const success = await deletePost(postId)
+      if (!success) {
+        alert('Erro ao excluir post. Tente novamente.')
       }
     }
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header with Profile */}
-      <div className="border-b border-gray-200 pb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">
+      <div className="border-b border-gray-200 pb-4 sm:pb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
           Olá, {profile?.name || 'Usuário'}! 👋
         </h1>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           Gerencie seus anúncios e acompanhe o desempenho da sua conta.
         </p>
       </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-blue-50 rounded-lg p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-blue-50 rounded-lg p-4 sm:p-6">
           <div className="flex items-center">
-            <TrendingUp className="w-8 h-8 text-blue-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-blue-600">
+            <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-blue-600">
                 Total de Posts
               </p>
-              <p className="text-2xl font-bold text-blue-900">{stats.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-900">{stats.total}</p>
             </div>
           </div>
         </div>
 
-        <div className="bg-green-50 rounded-lg p-6">
+        <div className="bg-green-50 rounded-lg p-4 sm:p-6">
           <div className="flex items-center">
-            <Eye className="w-8 h-8 text-green-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-green-600">Posts Ativos</p>
-              <p className="text-2xl font-bold text-green-900">
+            <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-green-600">Posts Ativos</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-900">
                 {stats.active}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="bg-orange-50 rounded-lg p-6">
+        <div className="bg-orange-50 rounded-lg p-4 sm:p-6">
           <div className="flex items-center">
-            <Clock className="w-8 h-8 text-orange-600" />
-            <div className="ml-4">
-              <p className="text-sm font-medium text-orange-600">Expirados</p>
-              <p className="text-2xl font-bold text-orange-900">
+            <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
+            <div className="ml-3 sm:ml-4">
+              <p className="text-xs sm:text-sm font-medium text-orange-600">Expirados</p>
+              <p className="text-xl sm:text-2xl font-bold text-orange-900">
                 {stats.expired}
               </p>
             </div>
@@ -148,14 +92,14 @@ export default function Dashboard() {
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-4">
-        <Button asChild className="bg-orange-600 hover:bg-orange-700">
+      <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+        <Button asChild className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto">
           <Link to="/dashboard/create-post">
             <Plus className="w-4 h-4" />
             Criar Novo Anúncio
           </Link>
         </Button>
-        <Button variant="outline" asChild>
+        <Button variant="outline" asChild className="w-full sm:w-auto">
           <Link to="/">
             <Eye className="w-4 h-4" />
             Ver Todos os Anúncios
@@ -239,14 +183,14 @@ export default function Dashboard() {
                     </div>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" asChild>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none">
                       <Link to={`/post/${post.id}`}>
                         <Eye className="w-4 h-4 mr-1" />
                         Ver
                       </Link>
                     </Button>
-                    <Button size="sm" variant="outline" asChild>
+                    <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none">
                       <Link to={`/dashboard/posts/${post.id}/edit`}>
                         <Edit className="w-4 h-4 mr-1" />
                         Editar
@@ -256,7 +200,7 @@ export default function Dashboard() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleDeletePost(post.id)}
-                      className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                      className="text-red-600 hover:text-red-700 hover:bg-red-50 flex-1 sm:flex-none"
                     >
                       <Trash2 className="w-4 h-4 mr-1" />
                       Excluir

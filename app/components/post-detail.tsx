@@ -100,7 +100,7 @@ export function PostDetail({ post }: PostDetailProps) {
       <div className="relative">
         {/* Main Image Showcase */}
         {sortedImages.length > 0 && (
-          <div className="relative h-[70vh] w-full overflow-hidden">
+          <div className="relative h-[50vh] sm:h-[60vh] lg:h-[70vh] w-full overflow-hidden">
             {/* Background Image with Blur */}
             <div
               className="absolute inset-0 bg-cover bg-center filter blur-sm scale-110"
@@ -111,7 +111,7 @@ export function PostDetail({ post }: PostDetailProps) {
             <div className="absolute inset-0 bg-black/30" />
 
             {/* Main Image Container */}
-            <div className="relative h-full flex items-center justify-center p-8">
+            <div className="relative h-full flex items-center justify-center p-4 sm:p-8">
               <div className="relative max-w-5xl w-full h-full">
                 <div className="h-full rounded-3xl overflow-hidden shadow-2xl bg-white">
                   <img
@@ -127,24 +127,24 @@ export function PostDetail({ post }: PostDetailProps) {
                       <>
                         <button
                           onClick={prevImage}
-                          className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110"
+                          className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 sm:p-3 shadow-lg transition-all duration-200 hover:scale-110"
                         >
-                          <ChevronLeft className="w-6 h-6 text-gray-800" />
+                          <ChevronLeft className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
                         </button>
                         <button
                           onClick={nextImage}
-                          className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110"
+                          className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full p-2 sm:p-3 shadow-lg transition-all duration-200 hover:scale-110"
                         >
-                          <ChevronRight className="w-6 h-6 text-gray-800" />
+                          <ChevronRight className="w-4 h-4 sm:w-6 sm:h-6 text-gray-800" />
                         </button>
                       </>
                     )}
 
                     {/* Top Controls */}
-                    <div className="absolute top-6 left-6 right-6 flex justify-between items-start">
+                    <div className="absolute top-3 sm:top-6 left-3 sm:left-6 right-3 sm:right-6 flex justify-between items-start">
                       {/* Image Counter */}
                       {sortedImages.length > 1 && (
-                        <div className="bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium">
+                        <div className="bg-black/60 backdrop-blur-sm text-white px-2 sm:px-4 py-1 sm:py-2 rounded-full text-xs sm:text-sm font-medium">
                           {currentImageIndex + 1} / {sortedImages.length}
                         </div>
                       )}
@@ -153,17 +153,17 @@ export function PostDetail({ post }: PostDetailProps) {
                       <div className="flex gap-3">
                         <button
                           onClick={openImageFullscreen}
-                          className="bg-white/90 backdrop-blur-sm rounded-full p-3 shadow-lg transition-all duration-200 hover:scale-110 text-gray-600"
+                          className="bg-white/90 backdrop-blur-sm rounded-full p-2 sm:p-3 shadow-lg transition-all duration-200 hover:scale-110 text-gray-600"
                         >
-                          <Expand className="w-5 h-5" />
+                          <Expand className="w-4 h-4 sm:w-5 sm:h-5" />
                         </button>
                       </div>
                     </div>
 
                     {/* Bottom Image Dots */}
                     {sortedImages.length > 1 && (
-                      <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-                        <div className="flex gap-2 bg-black/40 backdrop-blur-sm rounded-full px-4 py-2">
+                      <div className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2">
+                        <div className="flex gap-1 sm:gap-2 bg-black/40 backdrop-blur-sm rounded-full px-2 sm:px-4 py-1 sm:py-2">
                           {sortedImages.map((_, index) => (
                             <button
                               key={index}
@@ -182,11 +182,11 @@ export function PostDetail({ post }: PostDetailProps) {
                 </div>
 
                 {/* Floating Price Tag */}
-                <div className="absolute -bottom-6 left-8">
-                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-8 py-4 rounded-2xl shadow-xl">
+                <div className="absolute -bottom-4 sm:-bottom-6 left-4 sm:left-8">
+                  <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-4 sm:px-8 py-2 sm:py-4 rounded-xl sm:rounded-2xl shadow-xl">
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-6 h-6" />
-                      <span className="text-3xl font-bold">
+                      <span className="text-xl sm:text-3xl font-bold">
                         {formatPrice(post.price)}
                       </span>
                     </div>
@@ -198,11 +198,11 @@ export function PostDetail({ post }: PostDetailProps) {
         )}
 
         {/* Floating Header Info */}
-        <div className="absolute -bottom-16 left-0 right-0 px-8">
+        <div className="absolute -bottom-12 sm:-bottom-16 left-0 right-0 px-4 sm:px-8">
           <div className="max-w-6xl mx-auto">
             <Card className="shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
-              <CardContent className="p-8">
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+              <CardContent className="p-4 sm:p-8">
+                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-4">
                       <Badge
@@ -224,11 +224,11 @@ export function PostDetail({ post }: PostDetailProps) {
                         )}
                     </div>
 
-                    <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                    <h1 className="text-2xl sm:text-3xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                       {post.title}
                     </h1>
 
-                    <div className="flex flex-wrap items-center gap-6 text-gray-600">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-gray-600">
                       <div className="flex items-center gap-2">
                         <div className="w-10 h-10 bg-gradient-to-br from-orange-400 to-orange-600 rounded-full flex items-center justify-center">
                           <User className="w-5 h-5 text-white" />
@@ -258,14 +258,14 @@ export function PostDetail({ post }: PostDetailProps) {
                   </div>
 
                   {/* Quick Contact */}
-                  <div className="flex flex-col sm:flex-row gap-3 lg:w-auto w-full">
+                  <div className="flex flex-col gap-2 sm:gap-3 lg:w-auto w-full">
                     {post.contact_whatsapp && (
                       <Button
                         onClick={() => handleContact('whatsapp')}
                         size="lg"
-                        className="bg-green-600 hover:bg-green-700 text-white px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                        className="bg-green-600 hover:bg-green-700 text-white px-4 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm sm:text-base"
                       >
-                        <MessageCircle className="w-5 h-5 mr-2" />
+                        <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         WhatsApp
                       </Button>
                     )}
@@ -275,9 +275,9 @@ export function PostDetail({ post }: PostDetailProps) {
                         onClick={() => handleContact('email')}
                         variant="outline"
                         size="lg"
-                        className="border-2 border-orange-200 text-orange-600 hover:bg-orange-50 px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
+                        className="border-2 border-orange-200 text-orange-600 hover:bg-orange-50 px-4 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 text-sm sm:text-base"
                       >
-                        <Mail className="w-5 h-5 mr-2" />
+                        <Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                         Email
                       </Button>
                     )}
@@ -290,9 +290,9 @@ export function PostDetail({ post }: PostDetailProps) {
       </div>
 
       {/* Main Content */}
-      <div className="pt-32 pb-16 px-8">
+      <div className="pt-24 sm:pt-32 pb-8 sm:pb-16 px-4 sm:px-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
             {/* Left Content */}
             <div className="lg:col-span-2 space-y-8">
               {/* Thumbnail Gallery */}
@@ -302,7 +302,7 @@ export function PostDetail({ post }: PostDetailProps) {
                     <h3 className="text-lg font-semibold mb-4 text-gray-900">
                       Todas as fotos
                     </h3>
-                    <div className="grid grid-cols-4 sm:grid-cols-6 gap-3">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-2 sm:gap-3">
                       {sortedImages.map((image, index) => (
                         <button
                           key={image.id}
@@ -365,7 +365,7 @@ export function PostDetail({ post }: PostDetailProps) {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6">
                     {post.available_date && (
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
                         <Calendar className="w-8 h-8 text-orange-500 flex-shrink-0" />
@@ -395,7 +395,7 @@ export function PostDetail({ post }: PostDetailProps) {
                         </div>
                       )}
 
-                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl sm:col-span-2">
+                    <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl">
                       <Clock className="w-8 h-8 text-orange-500 flex-shrink-0" />
                       <div>
                         <p className="font-semibold text-gray-900">

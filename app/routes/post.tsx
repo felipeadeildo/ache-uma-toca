@@ -1,12 +1,11 @@
 import { AlertCircle, ArrowLeft } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router'
 import { PostDetail } from '~/components/post-detail'
 import { Alert, AlertDescription } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import RippleWaveLoader from '~/components/ui/ripple-loader'
-import { supabase } from '~/lib/supabase'
-import { type PostWithAuthorAndImages } from '~/types/post'
+import { usePost } from '~/hooks/use-posts'
 import type { Route } from './+types/post'
 
 export function meta({ params }: Route.MetaArgs) {
@@ -19,64 +18,14 @@ export function meta({ params }: Route.MetaArgs) {
 export default function PostPage() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const [post, setPost] = useState<PostWithAuthorAndImages | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const { post, loading, error, fetchPost, clearPost } = usePost()
 
   useEffect(() => {
-    if (!id) return
-
-    const fetchPost = async () => {
-      try {
-        setLoading(true)
-        setError(null)
-
-        const { data, error } = await supabase
-          .from('posts')
-          .select(
-            `
-            *,
-            profiles!posts_user_id_fkey (
-              name,
-              email,
-              avatar_url
-            ),
-            post_images (
-              id,
-              image_url,
-              display_order
-            )
-          `
-          )
-          .eq('id', id)
-          .single()
-
-        if (error) {
-          if (error.code === 'PGRST116') {
-            setError('Post não encontrado')
-          } else {
-            setError('Erro ao carregar o post')
-          }
-          return
-        }
-
-        // Verificar se o post não expirou
-        if (data.expires_at && new Date(data.expires_at) <= new Date()) {
-          setError('Este post expirou')
-          return
-        }
-
-        setPost(data as PostWithAuthorAndImages)
-      } catch (err) {
-        setError('Erro inesperado ao carregar o post')
-        console.error('Error fetching post:', err)
-      } finally {
-        setLoading(false)
-      }
+    if (id) {
+      fetchPost(id)
     }
-
-    fetchPost()
-  }, [id])
+    return () => clearPost()
+  }, [id, fetchPost, clearPost])
 
   if (loading) {
     return (

@@ -8,8 +8,7 @@ import { Button } from '~/components/ui/button'
 import RippleWaveLoader from '~/components/ui/ripple-loader'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { useAuth } from '~/contexts/auth-context'
-import { supabase } from '~/lib/supabase'
-import { type PostFilters, type PostWithAuthorAndImages } from '~/types/post'
+import { useHomePosts } from '~/hooks/use-posts'
 import type { Route } from './+types/home'
 
 export function meta({}: Route.MetaArgs) {
@@ -21,80 +20,13 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const { user } = useAuth()
-  const [posts, setPosts] = useState<PostWithAuthorAndImages[]>([])
-  const [loading, setLoading] = useState(true)
-  const [filters, setFilters] = useState<PostFilters>({})
+  const { posts, loading, error, filters, setFilters, fetchPosts } = useHomePosts()
   const [showFilters, setShowFilters] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
     fetchPosts()
-  }, [filters])
-
-  const fetchPosts = async () => {
-    try {
-      setLoading(true)
-
-      let query = supabase
-        .from('posts')
-        .select(
-          `
-          *,
-          profiles!posts_user_id_fkey (
-            name,
-            email,
-            avatar_url
-          ),
-          post_images (
-            id,
-            image_url,
-            display_order
-          )
-        `
-        )
-        .gt('expires_at', new Date().toISOString())
-        .order('created_at', { ascending: false })
-
-      // Apply filters
-      if (filters.postType && filters.postType !== 'all') {
-        query = query.eq('post_type', filters.postType)
-      }
-
-      if (filters.location) {
-        query = query.ilike('location', `%${filters.location}%`)
-      }
-
-      if (filters.search) {
-        query = query.or(
-          `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`
-        )
-      }
-
-      if (filters.priceMin) {
-        query = query.gte('price', filters.priceMin)
-      }
-
-      if (filters.priceMax) {
-        query = query.lte('price', filters.priceMax)
-      }
-
-      if (filters.genderPreference) {
-        query = query.eq('gender_preference', filters.genderPreference)
-      }
-
-      const { data, error } = await query
-
-      if (error) {
-        console.error('Error fetching posts:', error)
-      } else {
-        setPosts(data as PostWithAuthorAndImages[])
-      }
-    } catch (error) {
-      console.error('Error fetching posts:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
+  }, [filters, fetchPosts])
 
   const handleCreatePost = () => {
     if (!user) {
@@ -105,15 +37,15 @@ export default function Home() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold text-gray-900">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="space-y-4 sm:space-y-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-900">
             Anúncios recentes
           </h2>
           <Button
             onClick={handleCreatePost}
-            className="bg-orange-600 hover:bg-orange-700"
+            className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto"
           >
             <Plus className="w-4 h-4" />
             Publicar anúncio
@@ -146,8 +78,8 @@ export default function Home() {
             }}
           />
         ) : (
-          <ScrollArea className="h-[800px]">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <ScrollArea className="h-[400px] sm:h-[600px] lg:h-[800px]">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}

@@ -4,7 +4,6 @@ import { cn } from '~/lib/utils'
 export interface Step {
   id: number
   title: string
-  description: string
   icon: React.ComponentType<{ className?: string }>
 }
 
@@ -15,7 +14,7 @@ interface StepIndicatorProps {
 
 export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
   return (
-    <div className="mb-8">
+    <div className="mb-4 sm:mb-6">
       {/* Steps Container */}
       <div className="flex items-start justify-between relative">
         {steps.map((step, index) => {
@@ -30,7 +29,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
             >
               <div
                 className={cn(
-                  'w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 relative z-10',
+                  'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center transition-all duration-300 relative z-10',
                   {
                     'bg-orange-600 text-white shadow-lg': isActive,
                     'bg-green-600 text-white': isCompleted,
@@ -39,16 +38,16 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 )}
               >
                 {isCompleted ? (
-                  <Check className="w-5 h-5" />
+                  <Check className="w-3 h-3 sm:w-5 sm:h-5" />
                 ) : (
-                  <Icon className="w-5 h-5" />
+                  <Icon className="w-3 h-3 sm:w-5 sm:h-5" />
                 )}
               </div>
 
-              <div className="mt-3 text-center px-1">
+              <div className="mt-2 sm:mt-3 text-center px-1">
                 <p
                   className={cn(
-                    'text-xs font-medium transition-colors duration-300 leading-tight',
+                    'text-xs font-medium transition-colors duration-300 leading-tight hidden sm:block',
                     {
                       'text-orange-600': isActive,
                       'text-green-600': isCompleted,

@@ -42,80 +42,75 @@ export function ContactPreferencesStep({
   errors,
 }: ContactPreferencesStepProps) {
   return (
-    <div className="space-y-6">
-      <div className="space-y-4">
+    <div className="space-y-4 sm:space-y-5">
+      <div className="space-y-3">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Formas de Contato
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">
+            📱 Formas de Contato
           </h3>
           <p className="text-sm text-gray-600">
-            Adicione pelo menos uma forma de contato para que interessados
-            possam entrar em contato com você.
+            Pelo menos uma forma de contato é obrigatória
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-2">
-            <Label htmlFor="contact_whatsapp">WhatsApp</Label>
+            <Label htmlFor="contact_whatsapp" className="text-sm font-medium">WhatsApp</Label>
             <Input
               id="contact_whatsapp"
               placeholder="(11) 99999-9999"
               value={contactWhatsapp}
               onChange={(e) => onContactWhatsappChange(e.target.value)}
-              className={errors.contact_whatsapp ? 'border-red-500' : ''}
+              className={`text-sm ${errors.contact_whatsapp ? 'border-red-500' : ''}`}
             />
-            <p className="text-xs text-gray-500">
-              Forma de contato mais utilizada
-            </p>
+            <p className="text-xs text-gray-500">Mais usado</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="contact_email">E-mail</Label>
+            <Label htmlFor="contact_email" className="text-sm font-medium">E-mail</Label>
             <Input
               id="contact_email"
               type="email"
               placeholder="seu.email@exemplo.com"
               value={contactEmail}
               onChange={(e) => onContactEmailChange(e.target.value)}
+              className="text-sm"
             />
-            <p className="text-xs text-gray-500">
-              Para contatos mais formais
-            </p>
+            <p className="text-xs text-gray-500">Contatos formais</p>
           </div>
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="contact_telegram">Telegram (opcional)</Label>
+          <Label htmlFor="contact_telegram" className="text-sm font-medium">Telegram</Label>
           <Input
             id="contact_telegram"
             placeholder="@seuusuario"
             value={contactTelegram}
             onChange={(e) => onContactTelegramChange(e.target.value)}
+            className="text-sm"
           />
-          <p className="text-xs text-gray-500">
-            Adicione seu @ do Telegram
-          </p>
+          <p className="text-xs text-gray-500">Opcional</p>
         </div>
 
         {errors.contact_whatsapp && (
-          <p className="text-sm text-red-600">{errors.contact_whatsapp}</p>
+          <p className="text-xs text-red-600">{errors.contact_whatsapp}</p>
         )}
       </div>
 
-      <div className="border-t pt-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Preferências
+      <div className="border-t pt-4">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+          ⚙️ Preferências
         </h3>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div className="space-y-2">
-            <Label htmlFor="gender_preference">Preferência de Gênero</Label>
+            <Label htmlFor="gender_preference" className="text-sm font-medium">Preferência de Gênero</Label>
             <Select
               value={genderPreference}
               onValueChange={onGenderPreferenceChange}
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Selecione uma preferência (opcional)" />
+              <SelectTrigger className="text-sm">
+                <SelectValue placeholder="Opcional" />
               </SelectTrigger>
               <SelectContent>
                 {Object.entries(GENDER_PREFERENCE_LABELS).map(
@@ -127,39 +122,33 @@ export function ContactPreferencesStep({
                 )}
               </SelectContent>
             </Select>
-            <p className="text-xs text-gray-500">
-              Especifique se tem preferência pelo gênero do inquilino
-            </p>
+            <p className="text-xs text-gray-500">Opcional</p>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="extra_info">Informações Adicionais</Label>
+            <Label htmlFor="extra_info" className="text-sm font-medium">Informações Extras</Label>
             <textarea
               id="extra_info"
-              placeholder="Adicione informações extras como: regras da casa, pets permitidos, fumantes, horários, proximidade de universidades, transporte público, etc..."
+              placeholder="Regras da casa, pets, fumantes, proximidade universidades..."
               value={extraInfo}
               onChange={(e) => onExtraInfoChange(e.target.value)}
-              rows={4}
+              rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm resize-none focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
             />
-            <p className="text-xs text-gray-500">
-              Informações que podem ser importantes para o interessado
-            </p>
+            <p className="text-xs text-gray-500">Opcional</p>
           </div>
         </div>
       </div>
 
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <div className="flex items-start space-x-3">
-          <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+        <div className="flex items-start space-x-2">
+          <div className="w-2 h-2 bg-blue-500 rounded-full mt-1.5 flex-shrink-0"></div>
           <div>
-            <h4 className="text-sm font-medium text-blue-900 mb-1">
-              Dica de segurança
+            <h4 className="text-xs font-medium text-blue-900 mb-1">
+              🔒 Segurança
             </h4>
             <p className="text-xs text-blue-700">
-              Sempre converse com interessados antes de marcar uma visita. 
-              Prefira encontros em horários seguros e, se possível, 
-              tenha alguém presente durante a visita.
+              Converse antes da visita. Prefira horários seguros.
             </p>
           </div>
         </div>
