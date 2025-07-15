@@ -6,11 +6,23 @@ import { Alert, AlertDescription } from '~/components/ui/alert'
 import { Button } from '~/components/ui/button'
 import RippleWaveLoader from '~/components/ui/ripple-loader'
 import { usePost } from '~/hooks/use-posts'
+import { supabase } from '~/lib/supabase'
 import type { Route } from './+types/post'
 
-export function meta({ params }: Route.MetaArgs) {
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+  const { data } = await supabase
+    .from('posts')
+    .select('title')
+    .eq('id', params.id)
+    .single()
+
+  return { postTitle: data?.title }
+}
+
+export function meta({ data, params }: Route.MetaArgs) {
+  const title = data?.postTitle || `Post ${params.id}`
   return [
-    { title: `Post ${params.id} - Ache uma Toca` },
+    { title: `${title} - Ache uma Toca` },
     { name: 'description', content: 'Detalhes do anúncio no Ache uma Toca' },
   ]
 }
