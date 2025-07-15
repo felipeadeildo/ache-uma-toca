@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router'
+import RippleWaveLoader from '~/components/ui/ripple-loader'
 import { useAuth } from '~/contexts/auth-context'
 
 export default function ProtectedLayout() {
@@ -20,8 +21,8 @@ export default function ProtectedLayout() {
     return (
       <div className="flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-600 mx-auto"></div>
-          <p className="mt-2 text-sm text-gray-600">Carregando...</p>
+          <RippleWaveLoader />
+          <p className="mt-2 text-sm text-gray-600">Autenticando...</p>
         </div>
       </div>
     )
