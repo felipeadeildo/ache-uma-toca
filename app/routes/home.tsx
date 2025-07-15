@@ -8,7 +8,7 @@ export function meta({}: Route.MetaArgs) {
 }
 
 export default function Home() {
-  return <div className="flex h-screen-full items-center justify-center gap-4 flex-col">
+  return <div className="flex h-screen items-center justify-center gap-4 flex-col">
     <h1 className="text-4xl font-bold">Ache uma Toca</h1>
     <p>Em desenvolvimento...</p>
   </div>
