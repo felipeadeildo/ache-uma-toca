@@ -9,7 +9,7 @@ import RippleWaveLoader from '~/components/ui/ripple-loader'
 import { ScrollArea } from '~/components/ui/scroll-area'
 import { useAuth } from '~/contexts/auth-context'
 import { supabase } from '~/lib/supabase'
-import { type PostFilters, type PostWithAuthor } from '~/types/post'
+import { type PostFilters, type PostWithAuthorAndImages } from '~/types/post'
 import type { Route } from './+types/home'
 
 export function meta({}: Route.MetaArgs) {
@@ -21,7 +21,7 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Home() {
   const { user } = useAuth()
-  const [posts, setPosts] = useState<PostWithAuthor[]>([])
+  const [posts, setPosts] = useState<PostWithAuthorAndImages[]>([])
   const [loading, setLoading] = useState(true)
   const [filters, setFilters] = useState<PostFilters>({})
   const [showFilters, setShowFilters] = useState(false)
@@ -44,6 +44,11 @@ export default function Home() {
             name,
             email,
             avatar_url
+          ),
+          post_images (
+            id,
+            image_url,
+            display_order
           )
         `
         )
@@ -82,7 +87,7 @@ export default function Home() {
       if (error) {
         console.error('Error fetching posts:', error)
       } else {
-        setPosts(data as PostWithAuthor[])
+        setPosts(data as PostWithAuthorAndImages[])
       }
     } catch (error) {
       console.error('Error fetching posts:', error)
@@ -142,7 +147,7 @@ export default function Home() {
           />
         ) : (
           <ScrollArea className="h-[800px]">
-            <div className="space-y-0">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
