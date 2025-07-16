@@ -78,7 +78,7 @@ export default function Home() {
             }}
           />
         ) : (
-          <ScrollArea className="h-[400px] sm:h-[600px] lg:h-[800px]">
+          <ScrollArea className="h-[600px] sm:h-[800px] lg:h-[1000px]">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {posts.map((post) => (
                 <PostCard key={post.id} post={post} />
