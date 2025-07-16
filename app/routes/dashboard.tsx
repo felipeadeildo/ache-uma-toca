@@ -26,10 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user?.id) {
-      console.log('Dashboard: Fetching user posts for user:', user.id)
       fetchUserPosts(user.id)
-    } else {
-      console.log('Dashboard: No user ID available')
     }
   }, [user?.id, fetchUserPosts])
 
