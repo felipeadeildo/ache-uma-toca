@@ -2,13 +2,11 @@ import { Clock, Edit, Eye, Plus, Trash2, TrendingUp } from 'lucide-react'
 import { useEffect } from 'react'
 import { Link } from 'react-router'
 import { Button } from '~/components/ui/button'
+import RippleWaveLoader from '~/components/ui/ripple-loader'
 import { useAuth } from '~/contexts/auth-context'
-import { formatRelativeTime } from '~/lib'
 import { useUserPosts } from '~/hooks/use-posts'
-import {
-  POST_TYPE_COLORS,
-  POST_TYPE_LABELS,
-} from '~/types/post'
+import { formatRelativeTime } from '~/lib'
+import { POST_TYPE_COLORS, POST_TYPE_LABELS } from '~/types/post'
 import type { Route } from './+types/dashboard'
 
 export function meta({}: Route.MetaArgs) {
@@ -23,11 +21,15 @@ export function meta({}: Route.MetaArgs) {
 
 export default function Dashboard() {
   const { profile, user } = useAuth()
-  const { posts, loading, error, fetchUserPosts, deletePost, stats } = useUserPosts()
+  const { posts, loading, error, fetchUserPosts, deletePost, stats } =
+    useUserPosts()
 
   useEffect(() => {
     if (user?.id) {
+      console.log('Dashboard: Fetching user posts for user:', user.id)
       fetchUserPosts(user.id)
+    } else {
+      console.log('Dashboard: No user ID available')
     }
   }, [user?.id, fetchUserPosts])
 
@@ -61,7 +63,9 @@ export default function Dashboard() {
               <p className="text-xs sm:text-sm font-medium text-blue-600">
                 Total de Posts
               </p>
-              <p className="text-xl sm:text-2xl font-bold text-blue-900">{stats.total}</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-900">
+                {stats.total}
+              </p>
             </div>
           </div>
         </div>
@@ -70,7 +74,9 @@ export default function Dashboard() {
           <div className="flex items-center">
             <Eye className="w-6 h-6 sm:w-8 sm:h-8 text-green-600" />
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-green-600">Posts Ativos</p>
+              <p className="text-xs sm:text-sm font-medium text-green-600">
+                Posts Ativos
+              </p>
               <p className="text-xl sm:text-2xl font-bold text-green-900">
                 {stats.active}
               </p>
@@ -82,7 +88,9 @@ export default function Dashboard() {
           <div className="flex items-center">
             <Clock className="w-6 h-6 sm:w-8 sm:h-8 text-orange-600" />
             <div className="ml-3 sm:ml-4">
-              <p className="text-xs sm:text-sm font-medium text-orange-600">Expirados</p>
+              <p className="text-xs sm:text-sm font-medium text-orange-600">
+                Expirados
+              </p>
               <p className="text-xl sm:text-2xl font-bold text-orange-900">
                 {stats.expired}
               </p>
@@ -93,7 +101,10 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-        <Button asChild className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto">
+        <Button
+          asChild
+          className="bg-orange-600 hover:bg-orange-700 w-full sm:w-auto"
+        >
           <Link to="/dashboard/create-post">
             <Plus className="w-4 h-4" />
             Criar Novo Anúncio
@@ -114,8 +125,11 @@ export default function Dashboard() {
         </div>
 
         {loading ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500">Carregando posts...</p>
+          <div className="flex justify-center items-center py-16">
+            <div className="text-center">
+              <RippleWaveLoader />
+              <p className="mt-4 text-gray-600">Carregando seus posts...</p>
+            </div>
           </div>
         ) : posts.length === 0 ? (
           <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -184,13 +198,23 @@ export default function Dashboard() {
                   </div>
 
                   <div className="flex flex-wrap gap-2">
-                    <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      asChild
+                      className="flex-1 sm:flex-none"
+                    >
                       <Link to={`/post/${post.id}`}>
                         <Eye className="w-4 h-4 mr-1" />
                         Ver
                       </Link>
                     </Button>
-                    <Button size="sm" variant="outline" asChild className="flex-1 sm:flex-none">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      asChild
+                      className="flex-1 sm:flex-none"
+                    >
                       <Link to={`/dashboard/posts/${post.id}/edit`}>
                         <Edit className="w-4 h-4 mr-1" />
                         Editar
