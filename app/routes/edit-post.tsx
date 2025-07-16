@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { Button } from '~/components/ui/button'
 import { Input } from '~/components/ui/input'
 import { Label } from '~/components/ui/label'
+import RippleWaveLoader from '~/components/ui/ripple-loader'
 import {
   Select,
   SelectContent,
@@ -181,8 +182,11 @@ export default function EditPost() {
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto space-y-8">
-        <div className="text-center py-12">
-          <p className="text-gray-500">Carregando post...</p>
+        <div className="flex justify-center items-center py-16">
+          <div className="text-center">
+            <RippleWaveLoader />
+            <p className="mt-4 text-gray-600">Carregando post...</p>
+          </div>
         </div>
       </div>
     )
