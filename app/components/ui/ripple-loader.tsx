@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { motion } from 'framer-motion'
 
 export default function RippleWaveLoader() {
   return (
@@ -6,7 +6,7 @@ export default function RippleWaveLoader() {
       {[...Array(7)].map((_, index) => (
         <motion.div
           key={index}
-          className="h-8 w-2 rounded-full bg-red-500"
+          className="h-8 w-2 rounded-full bg-orange-500"
           animate={{
             scaleY: [0.5, 1.5, 0.5],
             scaleX: [1, 0.8, 1],
@@ -21,5 +21,5 @@ export default function RippleWaveLoader() {
         />
       ))}
     </div>
-  );
+  )
 }
